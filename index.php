@@ -19,40 +19,57 @@
 </html>
 
 <?php
+
   // establish a connection with MySQL
-  $servername = "localhost";
-  $username = "awasist1_sao";
-  $password = "awas123";
-  $dbname = "awasist1_sao";
-  $conn = new mysqli($servername,$username,$password,$dbname);
-  
-  // kodeabsen to uppercase
-  $kodeabsen = strtoupper($_POST['kodeabsen']);
+
+	if (isset($_POST['kodeabsen'])) {
 		
-	if ($kodeabsen === "" ) {
-//		header('refresh: 2; url=index.html');
-		echo 'Input an attendance code' . '<p>';
-//		echo 'Redirecting in 2 seconds ...';
-  } else {
-  	// check whether someone has attended the event
-  	$result = mysqli_query($conn,"SELECT * FROM EventAttendance WHERE student_code='$kodeabsen'");
-  	
-  	if ($row = mysqli_fetch_array($result)) {        
-//  	header('refresh: 2; url=index.html');
-  		echo 'Absen ' . $kodeabsen . ' sudah hadir dari ' . $row['timestamp'] . '<p>';
-  		echo 'tidak berhasil memasukkan data' . '<p>'; 
-//  	echo 'Redirecting in 2 seconds ...';
-  	} else {
-  	// add new record to table
-    	$sql = "INSERT INTO EventAttendance (student_code) VALUES ('$kodeabsen')";
-    	
-    	if ($conn->query($sql) === TRUE) {
-//    		header('refresh: 2; url=index.html');
-    		echo 'Absen ' . $kodeabsen . ' hadir' . '<p>';
-//    		echo 'Redirecting in 2 seconds ...';
-    	} else {
-    		echo 'add record error';
-    	}
-    }
-  }
+		$servername = "localhost";
+		$username = "awasist1";
+		$password = "awas123";
+		$dbname = "awasist1_sao";
+
+		$conn = new mysqli($servername,$username,$password,$dbname);
+		
+		// kodeabsen to uppercase
+		$kodeabsen = strtoupper($_POST['kodeabsen']);
+	
+		$sql = "CREATE TABLE EventAttendance (
+					id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+					student_code VARCHAR(30) NOT NULL,
+					timestamp TIMESTAMP
+				)";
+				
+		$conn->query($sql);
+
+		if ($kodeabsen === "" ) {
+			header('refresh: 2; url=index.php');
+			echo 'Input tidak boleh kosong!' . '<p>';
+			echo 'Redirecting in 2 seconds ...';
+	  } else {
+		// check whether someone has attended the event
+		$result = mysqli_query($conn,"SELECT * FROM EventAttendance WHERE student_code='$kodeabsen'");
+		if ($row = mysqli_fetch_array($result)) {        
+			header('refresh: 2; url=index.php');
+			echo 'Absen ' . $kodeabsen . ' sudah hadir dari ' . $row['timestamp'] . '<p>';
+			echo 'tidak berhasil memasukkan data' . '<p>'; 
+			echo 'Redirecting in 2 seconds ...';
+		} else {
+		// add new record to table
+			$sql = "INSERT INTO EventAttendance (student_code) VALUES ('$kodeabsen')";
+			if ($conn->query($sql) === TRUE) {
+				 header('refresh: 2; url=index.php');
+				echo 'Absen ' . $kodeabsen . ' hadir' . '<p>';
+				echo 'Redirecting in 2 seconds ...';
+			} else {
+				echo 'add record error';
+			}
+		}
+	  }
+	  
+	  $conn->close();
+	} else echo 'input Kode Absen';
+ 
 ?>
+
+

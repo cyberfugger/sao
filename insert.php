@@ -1,4 +1,3 @@
-<title>Sistem Absensi Orion</title>
 <?php
   // establish a connection with MySQL
   $servername = "localhost";
